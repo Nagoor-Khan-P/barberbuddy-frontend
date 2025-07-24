@@ -19,6 +19,7 @@ export default function SaloonsPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
   useEffect(() => {
     const fetchSaloons = async () => {
@@ -29,7 +30,7 @@ export default function SaloonsPage() {
       }
 
       try {
-        const res = await fetch('http://localhost:8080/customer/saloons', {
+        const res = await fetch(`${baseUrl}/customer/saloons`, {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,

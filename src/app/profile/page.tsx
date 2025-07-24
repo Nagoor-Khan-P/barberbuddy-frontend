@@ -31,6 +31,7 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
   useEffect(() => {
     const fetchProfileAndBookings = async () => {
@@ -41,7 +42,7 @@ export default function ProfilePage() {
       }
 
       try {
-        const res = await fetch('http://localhost:8080/customer/profile', {
+        const res = await fetch(`${baseUrl}/customer/profile`, {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,

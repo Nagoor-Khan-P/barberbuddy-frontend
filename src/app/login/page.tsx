@@ -11,13 +11,14 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const { setAuthToken } = useAuth();
   const router = useRouter();
+  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
     try {
-      const response = await fetch('http://localhost:8080/users/login', {
+      const response = await fetch(`${baseUrl}/users/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),

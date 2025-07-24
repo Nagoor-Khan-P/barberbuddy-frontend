@@ -12,6 +12,7 @@ export default function RegisterPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,7 +25,7 @@ export default function RegisterPage() {
     try {
       setIsSubmitting(true);
 
-      const res = await fetch("http://localhost:8080/users/register", {
+      const res = await fetch(`${baseUrl}/users/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
