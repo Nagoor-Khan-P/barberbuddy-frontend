@@ -4,9 +4,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
+import type { RoleType } from '@/context/AuthContext';
 
 export default function Header() {
-  const { authToken, setAuthToken } = useAuth();
+  const { authToken, setAuthToken, user } = useAuth(); // Assuming user contains roles
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -28,9 +29,19 @@ export default function Header() {
     window.location.href = '/login';
   };
 
+  // Determine home route based on user role
+  const getHomeRoute = () => {
+    if (!authToken || !user || !user.roles) return '/';
+
+    console.log(user);
+    const isBarber = user.roles.some((role: RoleType) => role.name === 'BARBER');
+    if (isBarber)  return '/barber/home';
+    return '/home';
+  };
+
   return (
     <header className="w-full h-16 bg-black px-6 py-4 flex items-center justify-between">
-      <Link href={authToken ? "/home" : "/"} className="flex items-center gap-2">
+      <Link href={getHomeRoute()} className="flex items-center gap-2">
         <Image src="/logo.svg" alt="BarberBuddy Logo" width={32} height={32} />
         <span className="text-xl font-semibold text-white">BarberBuddy</span>
       </Link>

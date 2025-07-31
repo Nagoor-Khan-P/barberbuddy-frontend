@@ -18,12 +18,22 @@ export default function HomePage() {
           >
             Login
           </Link>
-          <Link
-            href="/register"
-            className="px-6 py-3 bg-white text-black border border-black rounded-lg text-lg hover:bg-gray-100 transition text-center"
-          >
-            Register
-          </Link>
+
+          <div className="flex flex-col sm:flex-row gap-4">
+            <Link
+              href="/register"
+              className="px-6 py-3 bg-white text-black border border-black rounded-lg text-lg hover:bg-gray-100 transition text-center"
+            >
+              Register as User
+            </Link>
+
+            <Link
+              href="/barber/register"
+              className="px-6 py-3 bg-white text-black border border-black rounded-lg text-lg hover:bg-gray-100 transition text-center"
+            >
+              Register as Barber
+            </Link>
+          </div>
         </div>
       </div>
     </main>

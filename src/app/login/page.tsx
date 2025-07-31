@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/context/AuthContext'
+import { useAuth } from '@/context/AuthContext';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
@@ -29,11 +29,37 @@ export default function LoginPage() {
         throw new Error(err.message || 'Login failed');
       }
 
-      const data = await response.json();
-      const jwt = data.token;
+      if (!response.ok) throw new Error('Failed to fetch profile');
 
-      setAuthToken(jwt);
-      router.push('/home'); // or any protected page
+
+      const data = await response.json();
+      const token = data.token;
+
+      const userResponse = await fetch(`${baseUrl}/users/profile`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const userData = await userResponse.json()
+
+      if (!token || !userData) {
+        throw new Error("Invalid login response");
+      }
+
+      const roleName = userData?.roles?.[0]?.name;
+
+      // Store token and user info
+      setAuthToken(token);
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(userData));
+
+      // Role-based redirection
+      if (roleName === 'BARBER') {
+        router.push('/barber/home');
+      } else {
+        router.push('/home');
+      }
     } catch (err: any) {
       setError(err.message);
     }
@@ -81,12 +107,18 @@ export default function LoginPage() {
           Login
         </button>
 
-        <p className="mt-6 text-center text-sm text-gray-700">
-          Don’t have an account?{' '}
-          <Link href="/register" className="text-blue-600 hover:underline">
-            Register here
-          </Link>
+        <p className="mt-4 text-center text-sm text-black">
+          Don’t have an account?
         </p>
+        <div className="mt-2 flex justify-center gap-4 text-sm">
+          <Link href="/register" className="text-blue-600 hover:underline">
+            Register as User
+          </Link>
+          <span>|</span>
+          <Link href="/barber/register" className="text-blue-600 hover:underline">
+            Register as Barber
+          </Link>
+        </div>
       </form>
     </div>
   );

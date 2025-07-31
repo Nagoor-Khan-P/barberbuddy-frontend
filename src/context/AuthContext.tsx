@@ -2,29 +2,43 @@
 
 import { createContext, useContext, useEffect, useState } from 'react';
 
+export interface RoleType {
+  id: string;
+  name: string;
+  description: string;
+}
+interface UserType {
+  id: string;
+  username: string;
+  roles: RoleType[];
+}
+
 interface AuthContextType {
   authToken: string | null;
   setAuthToken: (token: string | null) => void;
+  user: UserType | null;
+  setUser: (user: UserType | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [authToken, setAuthTokenState] = useState<string | null>(null);
+  const [user, setUser] = useState<UserType | null>(null);
+
   const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
   useEffect(() => {
     const token = localStorage.getItem('authToken');
-    setAuthTokenState(token);
-
     if (token) {
-      fetchUserProfile(token); // 🔄 Fetch user profile on load if token exists
+      setAuthTokenState(token);
+      fetchUserProfile(token);
     }
   }, []);
 
   const fetchUserProfile = async (token: string) => {
     try {
-      const response = await fetch(`${baseUrl}/customer/profile`, {
+      const response = await fetch(`${baseUrl}/users/profile`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -32,12 +46,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (!response.ok) throw new Error('Failed to fetch profile');
 
-      const userData = await response.json();
+      const userData: UserType = await response.json();
+      setUser(userData); // update context
 
-      // Store important fields in localStorage
-      localStorage.setItem('userId', userData.id);
-      localStorage.setItem('username', userData.username); // optional
-      // Store more fields if needed
+      // Optional: store in localStorage for persistence (not necessary if only using context)
+      localStorage.setItem('user', JSON.stringify(userData));
     } catch (error) {
       console.error('Error fetching user profile:', error);
     }
@@ -47,17 +60,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (token) {
       localStorage.setItem('authToken', token);
       setAuthTokenState(token);
-      fetchUserProfile(token); // 👈 Fetch profile on login
+      fetchUserProfile(token);
     } else {
       localStorage.removeItem('authToken');
-      localStorage.removeItem('userId');
-      localStorage.removeItem('username');
+      localStorage.removeItem('user');
       setAuthTokenState(null);
+      setUser(null);
     }
   };
 
   return (
-    <AuthContext.Provider value={{ authToken, setAuthToken }}>
+    <AuthContext.Provider value={{ authToken, setAuthToken, user, setUser }}>
       {children}
     </AuthContext.Provider>
   );
