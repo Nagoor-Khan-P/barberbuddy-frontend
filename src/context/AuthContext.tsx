@@ -51,6 +51,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       // Optional: store in localStorage for persistence (not necessary if only using context)
       localStorage.setItem('user', JSON.stringify(userData));
+      localStorage.setItem('userId', userData.id)
     } catch (error) {
       console.error('Error fetching user profile:', error);
     }

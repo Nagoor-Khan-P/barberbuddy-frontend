@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { User, Mail, Phone, Shield, CalendarCheck2, Store } from 'lucide-react';
 
 interface Role {
@@ -145,11 +146,15 @@ export default function ProfilePage() {
             ) : (
               <div className="space-y-4">
                 {saloons.map(saloon => (
-                  <div key={saloon.id} className="border rounded-lg p-4 shadow-sm hover:shadow-md transition">
+                  <Link
+                    key={saloon.id}
+                    href={`/barber/saloon/${saloon.id}`}
+                    className="block border rounded-lg p-4 shadow-sm hover:shadow-md hover:bg-gray-50 transition"
+                  >
                     <div className="font-semibold">{saloon.name}</div>
                     <div className="text-sm text-gray-600">{saloon.address}</div>
                     <div className="text-sm text-gray-500">{saloon.city}</div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             )}
