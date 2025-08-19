@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import {MapPin, User } from 'lucide-react';
 
 interface Saloon {
   id: number;
@@ -114,68 +115,70 @@ export default function SaloonDetailsPage() {
   };
 
   return (
-    <div className="p-6 relative">
-      {/* Back Button */}
-      <button
-        onClick={handleBackClick}
-        className="mb-6 px-5 py-2 bg-gray-200 rounded-lg text-sm text-gray-700 font-medium 
-                  hover:bg-gray-300 hover:shadow-md hover:scale-105 transition duration-300 transform cursor-pointer"
-      >
-        ← Back to Saloons
-      </button>
+    <div className="p-0">
 
-      {/* Saloon Info */}
+      {/* Saloon Header */}
       {saloon && (
-        <div className="mb-10 border rounded-xl shadow p-6 max-w-3xl mx-auto">
-          <h1 className="text-3xl font-bold mb-2">{saloon.name}</h1>
-          <p className="text-gray-700 mb-1"><strong>Address:</strong> {saloon.address}</p>
-          <p className="text-gray-700 mb-1"><strong>Barber:</strong> {saloon.barberUsername}</p>
-          {saloon.imageUrl && (
-            <img
-              src={saloon.imageUrl}
-              alt={saloon.name}
-              className="mt-4 rounded-lg w-full max-w-md"
-            />
-          )}
+        <div className="relative w-full h-64 md:h-80">
+          <img
+            src={saloon.imageUrl || '/saloons/s1.jpg'}
+            alt={saloon.name}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-black/40 flex flex-col justify-end p-6 text-white">
+            <h1 className="text-3xl font-bold">{saloon.name}</h1>
+            <p className="flex items-center gap-1 text-sm mt-1">
+              <MapPin size={16} /> {saloon.address}
+            </p>
+            <p className="flex items-center gap-1 text-sm mt-1">
+              <User size={16} /> Barber: {saloon.barberUsername}
+            </p>
+          </div>
         </div>
       )}
 
       {/* Slots Section */}
-      <h2 className="text-2xl font-semibold mb-4 text-center">Available Slots</h2>
-      {slots.length === 0 ? (
-        <p className="text-center">No slots available.</p>
-      ) : (
-        <div className="flex flex-wrap justify-center gap-4">
-          {slots.map((slot) => (
-            <div
-              key={slot.id}
-              className={`group w-64 border p-4 rounded-xl shadow hover:shadow-lg hover:scale-105 transition transform text-center relative ${
-                slot.booked ? 'bg-gray-100 cursor-not-allowed' : 'bg-white cursor-pointer'
-              }`}
-            >
-              <div className="font-medium text-lg">
-                {slot.date} at {slot.time}
-              </div>
+      <div className="p-6 max-w-4xl mx-auto">
+        <h2 className="text-2xl font-semibold mb-4 text-center">Available Slots</h2>
+
+        {loading ? (
+          <p className="text-center text-gray-500">Loading slots...</p>
+        ) : slots.length === 0 ? (
+          <p className="text-center text-gray-500">No slots available.</p>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+            {slots.map((slot) => (
               <div
-                className={`mt-2 font-semibold ${
-                  slot.booked ? 'text-red-500' : 'text-green-600'
+                key={slot.id}
+                className={`relative rounded-xl border p-4 text-center shadow transition ${
+                  slot.booked
+                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                    : 'bg-white hover:shadow-lg hover:scale-105 cursor-pointer'
                 }`}
               >
-                {slot.booked ? 'Booked' : 'Available'}
-              </div>
-
-              {!slot.booked && (
-                <button
-                  onClick={() => handleBook(slot)}
-                  className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-sm px-4 py-1 rounded opacity-0 group-hover:opacity-100 transition cursor-pointer"
+                <p className="font-medium">{slot.date}</p>
+                <p className="text-sm">{slot.time}</p>
+                <p
+                  className={`mt-2 font-semibold ${
+                    slot.booked ? 'text-red-500' : 'text-green-600'
+                  }`}
                 >
-                  Book Now
-                </button>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
+                  {slot.booked ? 'Booked' : 'Available'}
+                </p>
+
+                {!slot.booked && (
+                  <button
+                    onClick={() => handleBook(slot)}
+                    className="mt-3 bg-blue-600 text-white text-sm px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition"
+                  >
+                    Book Now
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

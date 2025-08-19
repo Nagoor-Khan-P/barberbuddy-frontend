@@ -9,7 +9,7 @@ export default function BackButton() {
   return (
     <button
       onClick={() => router.back()}
-      className="flex items-center gap-2 text-gray-700 hover:text-black p-2"
+      className="flex items-center gap-2 text-gray-700 hover:text-black p-2 cursor-pointer"
     >
       <ArrowLeft className="w-5 h-5" />
       <span className="hidden sm:inline">Back</span>

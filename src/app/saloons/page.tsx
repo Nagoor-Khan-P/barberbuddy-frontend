@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { MapPin, User, Star } from 'lucide-react';
+import { MapPin, Star } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 interface Saloon {
@@ -11,7 +11,6 @@ interface Saloon {
   address: string;
   barberUsername: string;
   createdAt: string;
-  // rating?: number; // Optional: Use this if you have dynamic ratings
 }
 
 export default function SaloonsPage() {
@@ -64,66 +63,68 @@ export default function SaloonsPage() {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-semibold mb-6 text-center text-gray-800">
+      {/* Page Title */}
+      <h1 className="text-2xl font-semibold mb-4 text-center text-gray-800">
         Available Saloons Nearby
       </h1>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      {/* Mock Map View */}
+      <div className="w-full h-56 mb-6 rounded-xl overflow-hidden shadow-md bg-gray-200 flex items-center justify-center text-gray-600 text-sm">
+        🗺️ Map View (coming soon)
+      </div>
+
+      {/* Saloons List */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {saloons.map((saloon) => (
           <div
             key={saloon.id}
-            className="group relative rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transform hover:scale-[1.02] transition-all duration-300 ease-in-out h-64"
+            onClick={() => router.push(`/saloon/${saloon.id}`)}
+            className="group relative rounded-xl overflow-hidden shadow-md hover:shadow-2xl transform hover:scale-[1.02] transition-all duration-300 ease-in-out cursor-pointer"
           >
             {/* Background image */}
-            <Image
-              src="/saloons/s1.jpg"
-              alt="Saloon background"
-              layout="fill"
-              objectFit="cover"
-              className="z-0"
-            />
-
-            {/* Overlay */}
-            <div className="absolute inset-0 bg-black/50 z-10 transition duration-300" />
+            <div className="relative h-48 w-full">
+              <Image
+                src="/saloons/s1.jpg"
+                alt="Saloon background"
+                fill
+                className="object-cover"
+              />
+              <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition" />
+            </div>
 
             {/* Content */}
-            <div className="relative z-20 p-4 text-white h-full flex flex-col justify-between">
-              <div>
-                <h2 className="text-xl font-bold mb-1">{saloon.name}</h2>
+            <div className="absolute bottom-0 left-0 right-0 p-4 z-20 text-white">
+              <h2 className="text-lg font-bold">{saloon.name}</h2>
 
-                <p className="text-sm flex items-center gap-1">
-                  <MapPin size={16} /> {saloon.address}
-                </p>
+              <p className="text-sm flex items-center gap-1">
+                <MapPin size={14} /> {saloon.address}
+              </p>
 
-                {/* Rating (static for now) */}
-                <div className="flex items-center gap-1 mt-1 text-yellow-400 text-sm">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <Star
-                      key={star}
-                      size={14}
-                      className={star <= 4.5 ? 'fill-yellow-400' : 'text-gray-500'}
-                    />
-                  ))}
-                  <span className="text-xs text-white ml-1">(4.5)</span>
-                </div>
+              {/* Rating (static 4.5 for now) */}
+              <div className="flex items-center gap-1 mt-1 text-yellow-400 text-sm">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Star
+                    key={star}
+                    size={14}
+                    className={star <= 4.5 ? 'fill-yellow-400' : 'text-gray-500'}
+                  />
+                ))}
+                <span className="text-xs text-gray-200 ml-1">(4.5)</span>
               </div>
 
-              <div className="flex items-end justify-between mt-2 text-xs text-gray-200">
-                <div>
-                  <p className="flex items-center gap-1">
-                    <User size={14} /> Barber: {saloon.barberUsername}
-                  </p>
-                  <p>Created At: {new Date(saloon.createdAt).toLocaleDateString()}</p>
-                </div>
+              {/* Distance placeholder */}
+              <p className="text-xs text-gray-300 mt-1">~2.1 km away</p>
 
-                {/* Hidden by default, shown on hover */}
-                <button
-                  onClick={() => router.push(`/saloon/${saloon.id}`)}
-                  className="bg-white text-black text-xs font-medium px-3 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer"
-                >
-                  View Saloon
-                </button>
-              </div>
+              {/* CTA Button */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation(); // prevent parent onClick
+                  router.push(`/saloon/${saloon.id}`);
+                }}
+                className="mt-3 bg-white text-black text-xs font-medium px-4 py-2 rounded-lg shadow hover:bg-gray-100 transition"
+              >
+                Book Now
+              </button>
             </div>
           </div>
         ))}

@@ -14,7 +14,7 @@ export default function HomePage() {
       </p>
       
       <Button
-        className="text-lg px-6 py-3 rounded-2xl shadow-lg hover:shadow-xl"
+        className="text-lg px-6 py-3 rounded-2xl shadow-lg hover:shadow-xl cursor-pointer"
         onClick={() => router.push('/saloons')}
       >
         Find Nearby Saloons

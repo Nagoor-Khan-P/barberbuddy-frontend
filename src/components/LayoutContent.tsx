@@ -10,7 +10,7 @@ export default function LayoutContent({ children }: { children: React.ReactNode 
   const pathname = usePathname();
 
   // Routes where back button should be hidden
-  const hideOnRoutes = ["/", "/login", "/register", "/barber/home"];
+  const hideOnRoutes = ["/", "/home", "/login", "/register", "/barber/home"];
 
   return (
     <>
